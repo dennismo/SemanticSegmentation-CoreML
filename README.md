@@ -46,7 +46,7 @@ Download model from [apple's model page](https://developer.apple.com/machine-lea
 | iPhone 12 Mini    |     29 ms      |      30 ms       |   **226 ms**     |
 | iPhone 11 Pro     |     39 ms      |      40 ms       |      290 ms      |
 | iPhone 11 Pro Max |     35 ms      |      36 ms       |      280 ms      |
-| iPhone 11         |       ⏲        |        ⏲         |        ⏲        |
+| iPhone 11         |       40 ms       |        42 ms        |        293 ms        |
 | iPhone SE (2nd)   |       ⏲        |        ⏲         |        ⏲        |
 | iPhone XS Max     |       ⏲        |        ⏲         |        ⏲        |
 | iPhone XS         |     54 ms      |      55 ms        |      327 ms      |
