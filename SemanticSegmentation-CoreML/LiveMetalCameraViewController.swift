@@ -8,6 +8,8 @@
 
 import UIKit
 import Vision
+import Metal
+import MetalKit
 
 class LiveMetalCameraViewController: UIViewController {
 
@@ -22,9 +24,11 @@ class LiveMetalCameraViewController: UIViewController {
     var cameraTextureGenerater = CameraTextureGenerater()
     var segmentationTextureGenerater = SegmentationTextureGenerater()
     var overlayingTexturesGenerater = OverlayingTexturesGenerater()
+    var maskTexturesGenerater = MaskTexturesGenerater()
     
     var cameraTexture: Texture?
     var segmentationTexture: Texture?
+    var backgroundImageTexture: Texture?
     
     // MARK: - AV Properties
     var videoCapture: VideoCapture!
@@ -56,6 +60,8 @@ class LiveMetalCameraViewController: UIViewController {
         // setup camera
         setUpCamera()
         
+        setUpTexture()
+        
         // setup delegate for performance measurement
         👨‍🔧.delegate = self
     }
@@ -84,6 +90,17 @@ class LiveMetalCameraViewController: UIViewController {
         } else {
             fatalError()
         }
+    }
+    
+    func setUpTexture() {
+        let loader = MTKTextureLoader(device: MTLCreateSystemDefaultDevice()!)
+        do{
+            backgroundImageTexture = Texture(texture: try loader.newTexture(name: "starry_night", scaleFactor: CGFloat(1.0), bundle: nil))
+        }
+        catch{
+            fatalError()
+        }
+//        backgroundImageTexture = Texture(texture: self.segmentationTexture as! MTLTexture)
     }
     
     // MARK: - Setup camera
@@ -144,14 +161,19 @@ extension LiveMetalCameraViewController {
                     return
             }
             
-            let targetClass = 15 // index of human category
+//            let targetClass = 15 // index of human category
+            let targetClass = 0 // index of background
+
             
             guard let cameraTexture = cameraTexture,
                   let segmentationTexture = segmentationTextureGenerater.texture(segmentationmap, row, col, targetClass) else {
                 return
             }
             
-            let overlayedTexture = overlayingTexturesGenerater.texture(cameraTexture, segmentationTexture)
+//            var overlayedTexture = overlayingTexturesGenerater.texture(cameraTexture, segmentationTexture)
+//            overlayedTexture = overlayingTexturesGenerater.texture(backgroundImageTexture!, overlayedTexture!)
+            let maskTexture = maskTexturesGenerater.texture(backgroundImageTexture!, segmentationTexture)
+            let overlayedTexture = overlayingTexturesGenerater.texture(cameraTexture, maskTexture!)
             metalVideoPreview.currentTexture = overlayedTexture
             
             DispatchQueue.main.async { [weak self] in

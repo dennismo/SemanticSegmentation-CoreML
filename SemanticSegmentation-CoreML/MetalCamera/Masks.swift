@@ -7,18 +7,18 @@
 //
 
 import MetalKit
+//
+//public let standardImageVertices: [Float] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0]
+//public let standardTextureCoordinate: [Float] = [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0]
 
-public let standardImageVertices: [Float] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0]
-public let standardTextureCoordinate: [Float] = [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0]
-
-class OverlayingTexturesGenerater: NSObject {
+class MaskTexturesGenerater: NSObject {
     
     private var pipelineState: MTLRenderPipelineState!
     
     private var textureBuffer1: MTLBuffer?
     private var textureBuffer2: MTLBuffer?
     
-    public var alphaValue: Float = 1.0
+    public var alphaValue: Float = 0.5
     
     public override init() {
         super.init()
@@ -32,7 +32,7 @@ class OverlayingTexturesGenerater: NSObject {
     private func setupPiplineState(_ colorPixelFormat: MTLPixelFormat = .bgra8Unorm) {
         do {
             let rpd = try sharedMetalRenderingDevice.generateRenderPipelineDescriptor("two_vertex_render_target",
-                                                                                      "alphaBlendFragment",
+                                                                                      "maskFragment",
                                                                                       colorPixelFormat)
             pipelineState = try sharedMetalRenderingDevice.device.makeRenderPipelineState(descriptor: rpd)
         } catch {

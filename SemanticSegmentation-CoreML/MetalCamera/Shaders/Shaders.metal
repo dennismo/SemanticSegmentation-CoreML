@@ -111,7 +111,7 @@ fragment float4 segmentation_render_target(Vertex vertex_data [[ stage_in ]],
         return float4(1.0, 0, 0, 1.0);
     }
 
-    return float4(0,0,0,1.0);
+    return float4(0, 0, 0, 0);
 };
 
 fragment half4 lookupFragment(TwoInputVertex fragmentInput [[stage_in]],
@@ -146,6 +146,11 @@ fragment half4 lookupFragment(TwoInputVertex fragmentInput [[stage_in]],
     half4 newColor2 = inputTexture2.sample(quadSampler4, texPos2);
 
     half4 newColor = mix(newColor1, newColor2, fract(blueColor));
-
+//    if(newColor2.a == 0){
+//        return newColor1;
+//    }
+//    else{
+//        return half4(0,0,0,0);
+//    }
     return half4(mix(base, half4(newColor.rgb, base.w), half(intensity)));
 }
